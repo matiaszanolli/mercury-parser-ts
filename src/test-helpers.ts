@@ -1,34 +1,39 @@
 import assert from 'assert';
 import nock from 'nock'; // eslint-disable-line import/no-extraneous-dependencies
 import path from 'path';
-import cheerio from 'cheerio';
+// import cheerio from 'cheerio';
 
 // const fs = require('fs');
 
-export function clean(string) {
-  return string
+export function clean(str: string): string {
+  return str
     .trim()
     .replace(/\r?\n|\r/g, '')
     .replace(/\s+/g, ' ');
 }
 
-export function assertClean(a, b) {
+export function assertClean(a: string, b: string): void {
   assert.equal(clean(a), clean(b));
 }
 
+interface TestHelper {
+  test_folder: string
+  fixtures_folder: string
+}
+
 // using this from https://www.ctl.io/developers/blog/post/http-apis-test-code
-export function record(name, options = {}) {
+export function record(name: string, options: TestHelper) {
   const test_folder = options.test_folder || '.';
   const fixtures_folder = options.fixtures_folder || 'fixtures/nock';
   const fp = path.join(test_folder, fixtures_folder, `${name}.js`);
   // `has_fixtures` indicates whether the test has fixtures we should read,
   // or doesn't, so we should record and save them.
   // the environment variable `NOCK_RECORD` can be used to force a new recording.
-  let has_fixtures = !!process.env.NOCK_RECORD;
+  let has_fixtures: boolean = !!process.env.NOCK_RECORD;
 
   return {
     before: () => {
-      if (cheerio.browser) return;
+      
       if (!has_fixtures) {
         try {
           require(`../${fp}`); // eslint-disable-line global-require, import/no-dynamic-require, max-len
@@ -47,8 +52,8 @@ export function record(name, options = {}) {
     },
 
     after: done => {
-      if (!has_fixtures && !cheerio.browser) {
-        has_fixtures = nock.recorder.play();
+      if (!has_fixtures) {
+        let fixtures: string[] | nock.Definition[] = nock.recorder.play();
         // eslint-disable-next-line no-console
         console.log(
           `This is disabled for browser/node interop. To capture fixutres,
@@ -64,9 +69,18 @@ export function record(name, options = {}) {
   };
 }
 
+export interface MockDomNodeAttrib {
+  name?: string
+  value?: string
+  id?: string,
+  class?: string
+}
+
 export class MockDomNode {
+  attribs: MockDomNodeAttrib[]
+
   constructor() {
-    this.attributes = [
+    this.attribs = [
       {
         name: 'class',
         value: 'foo bar',
@@ -74,12 +88,12 @@ export class MockDomNode {
     ];
   }
 
-  setAttribute(key, val) {
-    this.attributes.pop();
-    this.attributes.push({ name: key, value: val });
+  setAttribute(key: string, val: string): void {
+    this.attribs.pop();
+    this.attribs.push({ name: key, value: val });
   }
 
-  removeAttribute() {
-    this.attributes.pop();
+  removeAttribute(): void {
+    this.attribs.pop();
   }
 }

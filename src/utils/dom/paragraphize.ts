@@ -1,3 +1,4 @@
+import cheerio from 'cheerio';
 import { BLOCK_LEVEL_TAGS_RE } from './constants';
 
 // Given a node, turn it into a P if it is not already a P, and
@@ -11,11 +12,11 @@ import { BLOCK_LEVEL_TAGS_RE } from './constants';
 // :param $: The cheerio object to handle dom manipulation
 // :param br: Whether or not the passed node is a br
 
-export default function paragraphize(node, $, br = false) {
+export default function paragraphize(node: cheerio.TagElement, $: cheerio.Root, br = false): cheerio.Root {
   const $node = $(node);
 
   if (br) {
-    let sibling = node.nextSibling;
+    let sibling: cheerio.TagElement = node.nextSibling as cheerio.TagElement;
     const p = $('<p></p>');
 
     // while the next node is text or not a block level element
@@ -26,7 +27,7 @@ export default function paragraphize(node, $, br = false) {
     ) {
       const { nextSibling } = sibling;
       $(sibling).appendTo(p);
-      sibling = nextSibling;
+      sibling = nextSibling as cheerio.TagElement;
     }
 
     $node.replaceWith(p);

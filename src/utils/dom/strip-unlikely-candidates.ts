@@ -1,6 +1,7 @@
 import { CANDIDATES_WHITELIST, CANDIDATES_BLACKLIST } from './constants';
+import cheerio from 'cheerio';
 
-export default function stripUnlikelyCandidates($) {
+export default function stripUnlikelyCandidates($: cheerio.Root): cheerio.Root {
   //  Loop through the provided document and remove any non-link nodes
   //  that are unlikely candidates for article content.
   //
@@ -12,13 +13,13 @@ export default function stripUnlikelyCandidates($) {
   //  :return $: the cleaned cheerio object
   $('*')
     .not('a')
-    .each((index, node) => {
-      const $node = $(node);
+    .each((index: number, node: cheerio.Element) => {
+      const $node: cheerio.Cheerio = $(node);
       const classes = $node.attr('class');
       const id = $node.attr('id');
       if (!id && !classes) return;
 
-      const classAndId = `${classes || ''} ${id || ''}`;
+      const classAndId: string = `${classes || ''} ${id || ''}`;
       if (CANDIDATES_WHITELIST.test(classAndId)) {
         return;
       }

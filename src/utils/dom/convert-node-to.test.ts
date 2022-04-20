@@ -5,9 +5,9 @@ import convertNodeTo from './convert-node-to';
 
 describe('convertNodeTo(node, $)', () => {
   it('takes a node and converts it to a diff tag', () => {
-    const html = '<div>Should become a p</div>';
-    const $ = cheerio.load(html);
-    const node = $('div').first();
+    const html: string = '<div>Should become a p</div>';
+    const $: cheerio.Root = cheerio.load(html);
+    const node: cheerio.Cheerio = $('div').first();
 
     const result = convertNodeTo(node, $).html();
     const after = '<p>Should become a p</p>';

@@ -1,6 +1,6 @@
 import assert from 'assert';
 
-import { MockDomNode } from 'test-helpers';
+import { MockDomNode, MockDomNodeAttrib } from '../../test-helpers';
 import setAttrs from './set-attrs';
 
 describe('setAttrs(node, attrs)', () => {
@@ -9,26 +9,27 @@ describe('setAttrs(node, attrs)', () => {
       class: 'baz',
     };
 
-    const postAttrs = [
+    const postAttrs: MockDomNodeAttrib[] = [
       {
         name: 'class',
         value: 'baz',
       },
     ];
 
-    const domNode = new MockDomNode();
+    const domNode: MockDomNode = new MockDomNode();
     const node = setAttrs(domNode, attrs);
 
-    assert.deepEqual(node.attributes, postAttrs);
+    assert.deepEqual(node.attribs, postAttrs);
   });
-
+  
   it('sets attrs for a raw cheerio node', () => {
-    const cheerioNode = {
-      attribs: {
+    let cheerioNode = new MockDomNode();
+    cheerioNode = Object.assign(cheerioNode, {
+      attribs: [{
         class: 'foo bar',
         id: 'baz bat',
-      },
-    };
+      }]
+    });
 
     const attrs = {
       class: 'baz',

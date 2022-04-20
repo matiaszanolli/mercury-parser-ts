@@ -1,4 +1,15 @@
-const HTML = {
+interface authorData {
+  test: string;
+  result: string;
+}
+
+interface HTMLobject {
+  authorMeta: authorData;
+  authorSelectors: authorData;
+  authorRegSelectors: authorData;
+}
+
+const HTML: HTMLobject = {
   authorMeta: {
     test: `
       <html>

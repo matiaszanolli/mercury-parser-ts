@@ -1,5 +1,5 @@
 import assert from 'assert';
-import cheerio from 'cheerio';
+
 
 import getEncoding from './get-encoding';
 
@@ -7,7 +7,7 @@ import getEncoding from './get-encoding';
 // A shim is used /src/shims/iconv-lite.js to decrease load size
 
 describe('getEncoding(str)', () => {
-  if (cheerio.browser) return;
+  //if (cheerio.browser) return;
 
   it('returns the encoding as a string', () => {
     const contentType = 'text/html; charset=iso-8859-15';

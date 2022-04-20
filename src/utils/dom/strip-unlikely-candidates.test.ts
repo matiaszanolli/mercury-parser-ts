@@ -1,11 +1,11 @@
 import assert from 'assert';
 import cheerio from 'cheerio';
 
-import { assertClean } from 'test-helpers';
+import { assertClean } from '../../test-helpers';
 import HTML from './fixtures/html';
 import stripUnlikelyCandidates from './strip-unlikely-candidates';
 
-function assertBeforeAndAfter(key, fn) {
+function assertBeforeAndAfter(key: string, fn: Function): void {
   const $ = cheerio.load(HTML[key].before);
   assertClean(fn($).html(), HTML[key].after);
 }
@@ -13,7 +13,7 @@ function assertBeforeAndAfter(key, fn) {
 describe('Generic Extractor Utils', () => {
   describe('stripUnlikelyCandidates(node)', () => {
     it('returns original doc if no matches found', () => {
-      const $ = cheerio.load(HTML.noMatches);
+      const $: cheerio.Root = cheerio.load(HTML.noMatches);
       const stripped = stripUnlikelyCandidates($);
       assert.equal(stripped.html(), HTML.noMatches);
     });
