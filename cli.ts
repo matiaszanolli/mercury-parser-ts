@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /* eslint-disable */
 
-const Mercury = require('./dist/mercury');
+import Mercury from './dist/mercury';
 const argv = require('yargs-parser')(process.argv.slice(2));
 
 const {

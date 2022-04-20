@@ -9,8 +9,17 @@ import getExtractor from 'extractors/get-extractor';
 import RootExtractor, { selectExtendedTypes } from 'extractors/root-extractor';
 import collectAllPages from 'extractors/collect-all-pages';
 
-const Mercury = {
-  async parse(url, { html, ...opts } = {}) {
+class Mercury {
+  private fetchAllPages: boolean
+  private fallback: boolean
+  private contentType: string
+  private headers: Object
+  private extend: boolean
+  private customExtractor: string
+  private browser: !!cheerio.browser
+
+
+  public async parse(url: string, { html: string, ...opts } = {}): MercuryOutput {
     const {
       fetchAllPages = true,
       fallback = true,
@@ -110,9 +119,7 @@ const Mercury = {
     }
 
     return { ...result, ...extendedTypes };
-  },
-
-  browser: !!cheerio.browser,
+  }
 
   // A convenience method for getting a resource
   // to work with, e.g., for custom extractor generator
