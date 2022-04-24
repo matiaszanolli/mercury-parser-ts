@@ -1,22 +1,20 @@
 import cheerio from 'cheerio';
 
-import { assertClean } from 'test-helpers';
+import { assertClean } from '../../test-helpers';
 import HTML from './fixtures/html';
 
 import convertToParagraphs from './convert-to-paragraphs';
 
-function assertBeforeAndAfter(key, fn) {
-  const $ = cheerio.load(HTML[key].before);
-  assertClean(fn($).html(), HTML[key].after);
+function assertBeforeAndAfter(key: string, fn: ($: cheerio.Root) => cheerio.Root) {
+  const $: cheerio.Root = cheerio.load(HTML[key].before);
+  assertClean(fn($).html(), <string>HTML[key].after);
 }
 
 describe('convertToParagraphs($)', () => {
   it('performs simple conversions', () => {
     // Skipping this one in the browser. It works, but since the browser wraps
     // elements in a div, the last span conversion won't work as expected.
-    if (!cheerio.browser) {
-      assertBeforeAndAfter('convertToParagraphs', convertToParagraphs);
-    }
+    assertBeforeAndAfter('convertToParagraphs', convertToParagraphs);
   });
 
   it('does not convert a div with nested p children', () => {
@@ -29,7 +27,7 @@ describe('convertToParagraphs($)', () => {
         </div>
       </div>
     `;
-    const $ = cheerio.load(html);
+    const $: cheerio.Root = cheerio.load(html);
     assertClean(convertToParagraphs($).html(), html);
   });
 });

@@ -1,6 +1,6 @@
-import { withinComment } from 'utils/dom';
+import { withinComment } from '.';
 
-function isGoodNode($node, maxChildren) {
+function isGoodNode($node: cheerio.Cheerio, maxChildren: number): boolean {
   // If it has a number of children, it's more likely a container
   // element. Skip it.
   if ($node.children().length > maxChildren) {
@@ -18,22 +18,22 @@ function isGoodNode($node, maxChildren) {
 // be extractable from the document. This is for flat
 // meta-information, like author, title, date published, etc.
 export default function extractFromSelectors(
-  $,
-  selectors,
-  maxChildren = 1,
-  textOnly = true
-) {
+  $: cheerio.Root,
+  selectors: string[] = [],
+  maxChildren: number = 1,
+  textOnly: boolean = true
+): string | null {
   // eslint-disable-next-line no-restricted-syntax
   for (const selector of selectors) {
-    const nodes = $(selector);
+    const nodes: cheerio.Cheerio = $(selector);
 
     // If we didn't get exactly one of this selector, this may be
     // a list of articles or comments. Skip it.
     if (nodes.length === 1) {
-      const $node = $(nodes[0]);
+      const $node: cheerio.Cheerio = $(nodes[0]);
 
       if (isGoodNode($node, maxChildren)) {
-        let content;
+        let content: string | null;
         if (textOnly) {
           content = $node.text();
         } else {

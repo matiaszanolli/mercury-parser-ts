@@ -7,7 +7,7 @@ describe('setAttr(node, attr, val)', () => {
   it('sets attrs for a raw jquery node', () => {
     const domNode = new MockDomNode();
 
-    const node: MockDomNode = setAttr(domNode, 'class', 'foo');
+    const node: MockDomNode = <MockDomNode>setAttr(domNode, 'class', 'foo');
 
     assert.equal(node.attribs[0].value, 'foo');
   });
