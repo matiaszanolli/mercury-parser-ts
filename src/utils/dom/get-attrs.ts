@@ -1,6 +1,8 @@
 import { MockDomNode, MockDomNodeAttrib } from "../../test-helpers";
 
-export default function getAttrs(node: cheerio.TagElement | MockDomNode): { [attr: string]: string; } | MockDomNodeAttrib[] {
+export type NodeAttrList = { [attr: string]: string; } | (MockDomNodeAttrib | MockDomNodeAttrib[]);
+
+export default function getAttrs(node: cheerio.TagElement | MockDomNode): Record<string, any> {
   const { attribs } = node;
 
   // if (!attribs && attributes) {

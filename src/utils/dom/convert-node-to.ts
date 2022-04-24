@@ -8,7 +8,7 @@ export default function convertNodeTo($node: cheerio.Cheerio, $: cheerio.Root, t
   const attrs = getAttrs(node) || {};
 
   const attribString:string = Reflect.ownKeys(attrs)
-    .map(key => `${String(key)}=${attrs[key]}`)
+    .map(key => `${String(key)}=${attrs[<string>key]}`)
     .join(' ');
   let html: string | null;
 

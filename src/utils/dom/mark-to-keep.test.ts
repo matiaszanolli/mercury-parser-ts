@@ -1,7 +1,7 @@
 import cheerio from 'cheerio';
 import assert from 'assert';
 
-import { assertClean } from 'test-helpers';
+import { assertClean } from '../../test-helpers';
 
 import HTML from './fixtures/html';
 import { markToKeep } from './index';
@@ -9,15 +9,13 @@ import { KEEP_CLASS } from './constants';
 
 describe('markToKeep($)', () => {
   it('marks elements that should be kept', () => {
-    const $ = cheerio.load(HTML.marksYouTube.before);
+    const $: cheerio.Root = cheerio.load(HTML.marksYouTube.before);
 
-    const result = markToKeep($('*').first(), $);
+    const result: cheerio.Root = markToKeep($('*').first(), $);
 
     assert.equal(result('iframe.mercury-parser-keep').length, 2);
 
-    if (!$.browser) {
-      assertClean(result.html(), HTML.marksYouTube.after);
-    }
+    assertClean(result.html(), HTML.marksYouTube.after);
   });
 
   it('marks same-domain elements to keep', () => {

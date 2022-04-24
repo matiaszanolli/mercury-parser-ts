@@ -1,4 +1,4 @@
-const HTML = {
+const HTML: Record<string, any> = {
   tooShort: `
     <div class="foo bar">
       <p>This is too short</p>

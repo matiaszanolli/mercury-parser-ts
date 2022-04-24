@@ -2,7 +2,7 @@ import assert from 'assert';
 import cheerio from 'cheerio';
 
 import { clean } from '../../test-helpers';
-import HTML from './fixtures/html';
+import {default as HTML} from './fixtures/html';
 import { paragraphize } from './index';
 
 describe('Generic Extractor Utils', () => {
@@ -12,17 +12,17 @@ describe('Generic Extractor Utils', () => {
       const node: cheerio.TagElement = $('br').get(0);
 
       // note: result here is not valid html; will handle elsewhere
-      const result: cheerio.Root = paragraphize(node, $, true).html();
+      const result: string = paragraphize(node, $, true).html();
 
       assert.equal(clean(result), clean(HTML.paragraphize.after));
     });
 
     it('conversts a BR into P and stops when block element hit', () => {
       const $ = cheerio.load(HTML.paragraphizeBlock.before);
-      const node: cheerio.Cheerio = $('br').get(0);
+      const node: cheerio.TagElement = $('br').get(0);
 
       // note: result here is not valid html; will handle elsewhere
-      const result = paragraphize(node, $, true).html();
+      const result: string = paragraphize(node, $, true).html();
       assert.equal(clean(result), clean(HTML.paragraphizeBlock.after));
     });
   });

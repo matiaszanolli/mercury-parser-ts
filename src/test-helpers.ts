@@ -23,8 +23,8 @@ interface TestHelper {
 
 // using this from https://www.ctl.io/developers/blog/post/http-apis-test-code
 export function record(name: string, options: TestHelper) {
-  const test_folder = options.test_folder || '.';
-  const fixtures_folder = options.fixtures_folder || 'fixtures/nock';
+  const test_folder: string = options.test_folder || '.';
+  const fixtures_folder: string = options.fixtures_folder || 'fixtures/nock';
   const fp = path.join(test_folder, fixtures_folder, `${name}.js`);
   // `has_fixtures` indicates whether the test has fixtures we should read,
   // or doesn't, so we should record and save them.
@@ -51,7 +51,7 @@ export function record(name: string, options: TestHelper) {
       }
     },
 
-    after: done => {
+    after: (done: () => void) => {
       if (!has_fixtures) {
         let fixtures: string[] | nock.Definition[] = nock.recorder.play();
         // eslint-disable-next-line no-console
@@ -69,15 +69,18 @@ export function record(name: string, options: TestHelper) {
   };
 }
 
+
 export interface MockDomNodeAttrib {
   name?: string
   value?: string
   id?: string,
   class?: string
+
 }
 
 export class MockDomNode {
-  attribs: MockDomNodeAttrib[]
+  attribs: MockDomNodeAttrib
+  class?: string
 
   constructor() {
     this.attribs = [

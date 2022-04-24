@@ -1,23 +1,23 @@
 import URL from 'url';
 
-import { getAttrs, setAttr } from 'utils/dom';
+import { getAttrs, NodeAttrList, setAttr, urlResolve } from '../../utils/dom';
 
-function absolutize($, rootUrl, attr) {
+function absolutize($: cheerio.Root, rootUrl: string, attr: string): void {
   const baseUrl = $('base').attr('href');
 
-  $(`[${attr}]`).each((_, node) => {
-    const attrs = getAttrs(node);
+  $(`[${attr}]`).each((_: number, node: cheerio.Element) => {
+    const attrs = getAttrs(<cheerio.TagElement> node);
     const url = attrs[attr];
     if (!url) return;
-    const absoluteUrl = URL.resolve(baseUrl || rootUrl, url);
+    const absoluteUrl: string = urlResolve(baseUrl || rootUrl, url);
 
-    setAttr(node, attr, absoluteUrl);
+    setAttr(<cheerio.TagElement> node, attr, absoluteUrl);
   });
 }
 
-function absolutizeSet($, rootUrl, $content) {
-  $('[srcset]', $content).each((_, node) => {
-    const attrs = getAttrs(node);
+function absolutizeSet($: cheerio.Root, rootUrl: string, $content: cheerio.Cheerio) {
+  $('[srcset]', $content).each((_: number, node: cheerio.Element) => {
+    const attrs: NodeAttrList = getAttrs(<cheerio.TagElement> node);
     const urlSet = attrs.srcset;
 
     if (urlSet) {

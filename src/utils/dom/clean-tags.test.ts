@@ -1,22 +1,21 @@
 import cheerio from 'cheerio';
 
-import { assertClean } from 'test-helpers';
+import { assertClean } from '../../test-helpers';
 
 import HTML from './fixtures/html';
 import { cleanTags } from './index';
 
 describe('cleanTags($)', () => {
+
   it('drops a matching node with a negative score', () => {
-    const $ = cheerio.load(HTML.dropNegativeScore.before);
+    const $: cheerio.Root = cheerio.load(HTML.dropNegativeScore.before);
 
     const result = cleanTags($('*').first(), $);
     // again small adjustments for cheerio vs. jquery implementation quirks
     // not functionally significant
     assertClean(
       result.html(),
-      cheerio.browser
-        ? HTML.dropNegativeScore.afterBrowser
-        : HTML.dropNegativeScore.after
+      HTML.dropNegativeScore.after
     );
   });
 

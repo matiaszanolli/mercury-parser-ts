@@ -12,8 +12,8 @@ import { BLOCK_LEVEL_TAGS_RE } from './constants';
 // :param $: The cheerio object to handle dom manipulation
 // :param br: Whether or not the passed node is a br
 
-export default function paragraphize(node: cheerio.TagElement, $: cheerio.Root, br = false): cheerio.Root {
-  const $node = $(node);
+export default function paragraphize(node: cheerio.TagElement, $: cheerio.Root, br: boolean = false): cheerio.Root {
+  const $node: cheerio.Cheerio = $(node);
 
   if (br) {
     let sibling: cheerio.TagElement = node.nextSibling as cheerio.TagElement;

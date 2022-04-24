@@ -1,4 +1,4 @@
-const HTML = {
+const HTML: Record<string, any> = {
   // getWeight fixtures
   positiveId: `
     <div id="entry">

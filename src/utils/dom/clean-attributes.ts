@@ -1,15 +1,15 @@
-import { getAttrs, setAttrs } from 'utils/dom';
+import { getAttrs, setAttrs } from '.';
 
 import { WHITELIST_ATTRS_RE, KEEP_CLASS } from './constants';
 
-function removeAllButWhitelist($article, $) {
+function removeAllButWhitelist($article: cheerio.Cheerio, $: cheerio.Root) {
   $article.find('*').each((index, node) => {
-    const attrs = getAttrs(node);
+    const attrs = getAttrs(<cheerio.TagElement> node);
 
     setAttrs(
-      node,
+      <cheerio.TagElement> node,
       Reflect.ownKeys(attrs).reduce((acc, attr) => {
-        if (WHITELIST_ATTRS_RE.test(attr)) {
+        if (WHITELIST_ATTRS_RE.test(<string>attr)) {
           return { ...acc, [attr]: attrs[attr] };
         }
 
@@ -25,7 +25,7 @@ function removeAllButWhitelist($article, $) {
 }
 
 // Remove attributes like style or align
-export default function cleanAttributes($article, $) {
+export default function cleanAttributes($article: cheerio.Cheerio, $: cheerio.Root) {
   // Grabbing the parent because at this point
   // $article will be wrapped in a div which will
   // have a score set on it.

@@ -1,8 +1,8 @@
 import { SPACER_RE } from './constants';
 
-function cleanForHeight($img, $) {
-  const height = parseInt($img.attr('height'), 10);
-  const width = parseInt($img.attr('width'), 10) || 20;
+function cleanForHeight($img: cheerio.Cheerio, $: cheerio.Root): cheerio.Root {
+  const height: number = parseInt(<string>$img.attr('height'), 10);
+  const width: number = parseInt(<string>$img.attr('width'), 10) || 20;
 
   // Remove images that explicitly have very small heights or
   // widths, because they are most likely shims or icons,
@@ -21,17 +21,17 @@ function cleanForHeight($img, $) {
 
 // Cleans out images where the source string matches transparent/spacer/etc
 // TODO This seems very aggressive - AP
-function removeSpacers($img, $) {
-  if (SPACER_RE.test($img.attr('src'))) {
+function removeSpacers($img: cheerio.Cheerio, $: cheerio.Root): cheerio.Root {
+  if (SPACER_RE.test(<string>$img.attr('src'))) {
     $img.remove();
   }
 
   return $;
 }
 
-export default function cleanImages($article, $) {
+export default function cleanImages($article: cheerio.Cheerio, $: cheerio.Root): cheerio.Root {
   $article.find('img').each((index, img) => {
-    const $img = $(img);
+    const $img: cheerio.Cheerio = $(img);
 
     cleanForHeight($img, $);
     removeSpacers($img, $);

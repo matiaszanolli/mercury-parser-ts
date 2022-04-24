@@ -1,4 +1,4 @@
-const HTML = {
+const HTML: Record<string, any> = {
   // extractFromMeta
   metaFoo: {
     test: `
