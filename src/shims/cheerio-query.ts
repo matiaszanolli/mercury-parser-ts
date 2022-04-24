@@ -7,11 +7,11 @@
 
 import jQuery from 'jquery';
 
-const PARSER_CLASS = 'mercury-parsing-container';
-let PARSING_NODE;
+const PARSER_CLASS: string = 'mercury-parsing-container';
+let PARSING_NODE: string;
 
 jQuery.noConflict();
-const $ = (selector, context, rootjQuery, contextOverride = true) => {
+const $ = (selector: string, context: string, rootjQuery: JQuery, contextOverride: boolean = true) => {
   if (contextOverride) {
     if (context && typeof context === 'string') {
       context = PARSING_NODE.find(context);
