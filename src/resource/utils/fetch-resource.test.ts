@@ -1,14 +1,14 @@
 import assert from 'assert';
-import URL from 'url';
 
-import { record } from 'test-helpers';
+import { record } from '../../test-helpers';
 import fetchResource, { baseDomain, validateResponse } from './fetch-resource';
 import { MAX_CONTENT_LENGTH } from './constants';
+import { SimpleObject } from '../../resource';
 
 describe('fetchResource(url)', () => {
   const recorder = record('fetch-resource-test');
-  beforeAll(recorder.before);
-  afterAll(recorder.after);
+  beforeEach(recorder.before);
+  afterEach(recorder.after);
 
   it('returns appropriate json for bad url', async () => {
     const url = 'http://www.nytimes.com/500';
@@ -19,16 +19,16 @@ describe('fetchResource(url)', () => {
 
   it('passes custom headers in requests', async () => {
     // A GET request to this endpoint returns the list of all request headers as part of the response JSON
-    const url = 'https://postman-echo.com/headers';
-    const parsedUrl = URL.parse(url);
-    const headers = {
+    const url: string = 'https://postman-echo.com/headers';
+    const parsedUrl: URL = new URL(url);
+    const headers: SimpleObject = {
       'my-custom-header': 'Lorem ipsum dolor sit amet',
     };
-    const result = await fetchResource(url, parsedUrl, headers);
-    const body = JSON.parse(result.body.toString());
+    const result: SimpleObject = <SimpleObject>await fetchResource(url, parsedUrl, <SimpleObject>headers);
+    const body: SimpleObject = JSON.parse((<SimpleObject>result.body).toString());
 
     assert.equal(
-      body.headers['my-custom-header'],
+      (<SimpleObject>body.headers)['my-custom-header'],
       'Lorem ipsum dolor sit amet'
     );
   });
@@ -36,7 +36,7 @@ describe('fetchResource(url)', () => {
   it('returns a buffer as its body', async () => {
     const url =
       'http://www.nytimes.com/2016/08/16/upshot/the-state-of-the-clinton-trump-race-is-it-over.html?_r=0';
-    const result = await fetchResource(url);
+    const result: SimpleObject = await fetchResource(url);
 
     assert.equal(typeof result.body, 'object');
   });
@@ -44,38 +44,42 @@ describe('fetchResource(url)', () => {
   it('fetches nyt', async () => {
     const url =
       'http://www.nytimes.com/2016/08/16/upshot/the-state-of-the-clinton-trump-race-is-it-over.html?_r=0';
-    const { response } = await fetchResource(url);
+    const response: SimpleObject = await fetchResource(url);
+    const res: SimpleObject = <SimpleObject>response.response;
 
-    assert.equal(response.statusCode, 200);
+    assert.equal(res.statusCode, 200);
   });
 
   it('fetches domains', async () => {
     const url = 'http://theconcourse.deadspin.com/1786177057';
-    const { response } = await fetchResource(url);
+    const response: SimpleObject = await fetchResource(url);
+    const res: SimpleObject = <SimpleObject>response.response;
 
-    assert.equal(response.statusCode, 200);
+    assert.equal(res.statusCode, 200);
   });
 
   it('fetches nyt', async () => {
     const url =
       'http://www.nytimes.com/2016/08/16/upshot/the-state-of-the-clinton-trump-race-is-it-over.html?_r=0';
-    const { response } = await fetchResource(url);
-
-    assert.equal(response.statusCode, 200);
+      const response: SimpleObject = await fetchResource(url);
+      const res: SimpleObject = <SimpleObject>response.response;
+  
+    assert.equal(res.statusCode, 200);
   });
 
   it('handles this gzip error', async () => {
     const url =
       'http://www.redcross.ca/blog/2016/11/photo-of-the-day--one-year-anniversary-of-the-end-of-ebola-in-sierra-leone';
-    const { response } = await fetchResource(url);
-
-    assert.equal(response.statusCode, 200);
+      const response: SimpleObject = await fetchResource(url);
+      const res: SimpleObject = <SimpleObject>response.response;
+  
+    assert.equal(res.statusCode, 200);
   });
 });
 
 describe('validateResponse(response)', () => {
   it('validates a response object', () => {
-    const validResponse = {
+    const validResponse: SimpleObject = {
       statusMessage: 'OK',
       statusCode: 200,
       headers: {
@@ -88,7 +92,7 @@ describe('validateResponse(response)', () => {
   });
 
   it('throws an error if there is no status code', () => {
-    const invalidResponse = {};
+    const invalidResponse: SimpleObject = {};
 
     assert.throws(() => {
       validateResponse(invalidResponse);
@@ -96,7 +100,7 @@ describe('validateResponse(response)', () => {
   });
 
   it('throws an error if response code is not 200', () => {
-    const invalidResponse = {
+    const invalidResponse: SimpleObject = {
       statusCode: 500,
     };
 
@@ -106,7 +110,7 @@ describe('validateResponse(response)', () => {
   });
 
   it('throws an error if response has bad content-type', () => {
-    const invalidResponse = {
+    const invalidResponse: SimpleObject = {
       statusMessage: 'OK',
       statusCode: 200,
       headers: {
@@ -121,7 +125,7 @@ describe('validateResponse(response)', () => {
   });
 
   it('throws an error if response length is > max', () => {
-    const invalidResponse = {
+    const invalidResponse: SimpleObject = {
       statusMessage: 'OK',
       statusCode: 200,
       headers: {
@@ -139,14 +143,14 @@ describe('validateResponse(response)', () => {
 describe('baseDomain(parsedUrl)', () => {
   it('returns the base domain, excluding subdomain', () => {
     const url = 'https://www.npmjs.com/package/request#streaming';
-    const parsedUrl = URL.parse(url);
+    const parsedUrl: URL = new URL(url);
 
     assert.equal(baseDomain(parsedUrl), 'npmjs.com');
   });
 
   it('returns the base domain as is if no subdomain', () => {
     const url = 'https://npmjs.com/package/request#streaming';
-    const parsedUrl = URL.parse(url);
+    const parsedUrl = new URL(url);
 
     assert.equal(baseDomain(parsedUrl), 'npmjs.com');
   });

@@ -1,4 +1,3 @@
-import URL from 'url';
 import request from 'postman-request';
 
 import {
@@ -8,9 +7,11 @@ import {
   MAX_CONTENT_LENGTH,
 } from './constants';
 
-function get(options) {
+import { SimpleObject, SimpleObjectValue } from '../../resource';
+
+function get(options: SimpleObject): Promise<(SimpleObject | string )> {
   return new Promise((resolve, reject) => {
-    request(options, (err, response, body) => {
+    request(options, (err: SimpleObject, response: SimpleObject, body: string) => {
       if (err) {
         reject(err);
       } else {
@@ -25,7 +26,7 @@ function get(options) {
 // Validation here means that we haven't found reason to bail from
 // further processing of this url.
 
-export function validateResponse(response, parseNon200 = false) {
+export function validateResponse(response: SimpleObject, parseNon200: boolean = false): boolean {
   // Check if we got a valid status code
   // This isn't great, but I'm requiring a statusMessage to be set
   // before short circuiting b/c nock doesn't set it in tests
@@ -49,13 +50,13 @@ export function validateResponse(response, parseNon200 = false) {
     }
   }
 
-  const {
-    'content-type': contentType,
-    'content-length': contentLength,
-  } = response.headers;
+  const responseHeaders: SimpleObjectValue = <SimpleObject>response.headers;
+
+  const contentType: string = <string>responseHeaders['contentType'];
+  const contentLength: number = responseHeaders['contentLength'];
 
   // Check that the content is not in BAD_CONTENT_TYPES
-  if (BAD_CONTENT_TYPES_RE.test(contentType)) {
+  if (BAD_CONTENT_TYPES_RE.test(<string>contentType)) {
     throw new Error(
       `Content-type for this resource was ${contentType} and is not allowed.`
     );
@@ -73,7 +74,8 @@ export function validateResponse(response, parseNon200 = false) {
 
 // Grabs the last two pieces of the URL and joins them back together
 // This is to get the 'livejournal.com' from 'erotictrains.livejournal.com'
-export function baseDomain({ host }) {
+export function baseDomain(hostObj: URL): string {
+  const host: string = <string>hostObj.host;
   return host
     .split('.')
     .slice(-2)
@@ -86,9 +88,9 @@ export function baseDomain({ host }) {
 // TODO: Ensure we are not fetching something enormous. Always return
 //       unicode content for HTML, with charset conversion.
 
-export default async function fetchResource(url, parsedUrl, headers = {}) {
-  parsedUrl = parsedUrl || URL.parse(encodeURI(url));
-  const options = {
+export default async function fetchResource(url: string, parsedUrl?: URL, headers: SimpleObject = {}): Promise<SimpleObject> {
+  parsedUrl = parsedUrl || new URL(encodeURI(url));
+  const options: SimpleObject = {
     url: parsedUrl.href,
     headers: { ...REQUEST_HEADERS, ...headers },
     timeout: FETCH_TIMEOUT,
@@ -101,7 +103,7 @@ export default async function fetchResource(url, parsedUrl, headers = {}) {
     gzip: true,
     // Follow any non-GET redirects
     followAllRedirects: true,
-    ...(typeof window !== 'undefined'
+    ...(typeof window !== void 0
       ? {}
       : {
           // Follow GET redirects; this option is for Node only
@@ -109,7 +111,9 @@ export default async function fetchResource(url, parsedUrl, headers = {}) {
         }),
   };
 
-  const { response, body } = await get(options);
+  const res: SimpleObject = <SimpleObject>await get(options);
+  const body: string = <string>res.body;
+  const response: SimpleObject = <SimpleObject>res.response;
 
   try {
     validateResponse(response);

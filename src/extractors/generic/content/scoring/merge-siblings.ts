@@ -1,5 +1,5 @@
-import { textLength, linkDensity } from 'utils/dom';
-import { hasSentenceEnd } from 'utils/text';
+import { textLength, linkDensity } from '../../../../utils/dom';
+import { hasSentenceEnd } from '../../../../utils/text';
 
 import { NON_TOP_CANDIDATE_TAGS_RE } from './constants';
 import { getScore } from './index';
@@ -9,31 +9,31 @@ import { getScore } from './index';
 // may be split parts of the content (Like two divs, a preamble and
 // a body.) Example:
 // http://articles.latimes.com/2009/oct/14/business/fi-bigtvs14
-export default function mergeSiblings($candidate, topScore, $) {
+export default function mergeSiblings($candidate: cheerio.Cheerio, topScore: number, $: cheerio.Root): cheerio.Cheerio | null {
   if (!$candidate.parent().length) {
     return $candidate;
   }
 
-  const siblingScoreThreshold = Math.max(10, topScore * 0.25);
-  const wrappingDiv = $('<div></div>');
+  const siblingScoreThreshold: number = Math.max(10, topScore * 0.25);
+  const wrappingDiv: cheerio.Cheerio = $('<div></div>');
 
   $candidate
     .parent()
     .children()
-    .each((index, sibling) => {
-      const $sibling = $(sibling);
+    .each((index: number, sibling: cheerio.Element) => {
+      const $sibling: cheerio.Cheerio = $(sibling);
       // Ignore tags like BR, HR, etc
-      if (NON_TOP_CANDIDATE_TAGS_RE.test(sibling.tagName)) {
+      if (NON_TOP_CANDIDATE_TAGS_RE.test((<cheerio.TagElement>sibling).tagName)) {
         return null;
       }
 
-      const siblingScore = getScore($sibling);
+      const siblingScore: number | null = getScore($sibling);
       if (siblingScore) {
         if ($sibling.get(0) === $candidate.get(0)) {
           wrappingDiv.append($sibling);
         } else {
-          let contentBonus = 0;
-          const density = linkDensity($sibling);
+          let contentBonus: number = 0;
+          const density: number = linkDensity($sibling);
 
           // If sibling has a very low link density,
           // give it a small bonus
@@ -53,14 +53,14 @@ export default function mergeSiblings($candidate, topScore, $) {
             contentBonus += topScore * 0.2;
           }
 
-          const newScore = siblingScore + contentBonus;
+          const newScore: number = siblingScore + contentBonus;
 
           if (newScore >= siblingScoreThreshold) {
             return wrappingDiv.append($sibling);
           }
-          if (sibling.tagName === 'p') {
-            const siblingContent = $sibling.text();
-            const siblingContentLength = textLength(siblingContent);
+          if ((<cheerio.TagElement>sibling).tagName === 'p') {
+            const siblingContent: string = $sibling.text();
+            const siblingContentLength: number = textLength(siblingContent);
 
             if (siblingContentLength > 80 && density < 0.25) {
               return wrappingDiv.append($sibling);

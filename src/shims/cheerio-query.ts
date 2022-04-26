@@ -8,10 +8,10 @@
 import jQuery from 'jquery';
 
 const PARSER_CLASS: string = 'mercury-parsing-container';
-let PARSING_NODE: string;
+let PARSING_NODE: JQuery.Node;
 
 jQuery.noConflict();
-const $ = (selector: string, context: string, rootjQuery: JQuery, contextOverride: boolean = true) => {
+const $ = (selector: string, context?: string | null, rootjQuery?: JQuery | null, contextOverride: boolean = true) => {
   if (contextOverride) {
     if (context && typeof context === 'string') {
       context = PARSING_NODE.find(context);
@@ -20,22 +20,22 @@ const $ = (selector: string, context: string, rootjQuery: JQuery, contextOverrid
     }
   }
 
-  return new jQuery.fn.init(selector, context, rootjQuery); // eslint-disable-line new-cap
+  return jQuery(selector, context? context : rootjQuery); // eslint-disable-line new-cap
 };
 
 // eslint-disable-next-line no-multi-assign
 $.fn = $.prototype = jQuery.fn;
 jQuery.extend($, jQuery); // copy's trim, extend etc to $
 
-const removeUnusedTags = $node => {
+const removeUnusedTags = function($node: JQuery.Node): JQuery.Node {
   // remove scripts and stylesheets
   $node.find('script, style, link[rel="stylesheet"]').remove();
 
   return $node;
 };
 
-$.cloneHtml = () => {
-  const html = removeUnusedTags($('html', null, null, false).clone());
+$.cloneHtml = function(): JQuery.Node {
+  const html: JQuery.Node = removeUnusedTags($('html', null, null, false).clone());
 
   return html
     .children()
@@ -43,12 +43,12 @@ $.cloneHtml = () => {
     .wrap('<div />');
 };
 
-$.root = () => $('*').first();
+$.root = (): JQuery.Node => $('*').first();
 
 $.browser = true;
 
-const isContainer = $node => {
-  const el = $node.get(0);
+const isContainer = function($node: JQuery.Node): boolean {
+  const el: JQuery.Node = $node.get(0);
   if (el && el.tagName) {
     return el.tagName.toLowerCase() === 'container';
   }
@@ -56,7 +56,7 @@ const isContainer = $node => {
   return false;
 };
 
-$.html = $node => {
+$.html = ($node: JQuery.Node): string => {
   if ($node) {
     // we never want to return a parsing container, only its children
     if (isContainer($node) || isContainer($node.children('container'))) {
@@ -68,14 +68,14 @@ $.html = $node => {
       .html();
   }
 
-  const $body = removeUnusedTags($('body', null, null, false).clone());
-  const $head = removeUnusedTags($('head', null, null, false).clone());
+  const $body: JQuery.Node = removeUnusedTags($('body', null, null, false).clone());
+  const $head: JQuery.Node = removeUnusedTags($('head', null, null, false).clone());
 
   if (PARSING_NODE && PARSING_NODE.length > 0) {
     return PARSING_NODE.children().html();
   }
 
-  const html = $('<container />')
+  const html: string = $('<container />')
     .append($(`<container>${$head.html()}</container>`))
     .append($(`<container>${$body.html()}</container>`))
     .wrap('<container />')
@@ -86,7 +86,7 @@ $.html = $node => {
 };
 
 // eslint-disable-next-line no-unused-vars
-$.load = (html, opts = {}, returnHtml = false) => {
+$.load = function(html: JQuery, opts: object = {}, returnHtml: boolean = false): JQuery.Node {
   if (!html) {
     html = $.cloneHtml();
   } else {
@@ -105,7 +105,7 @@ $.load = (html, opts = {}, returnHtml = false) => {
     .contents()
     .each(function() {
       // eslint-disable-next-line no-undef
-      if (this.nodeType === Node.COMMENT_NODE) {
+      if (this.nodeType === 8) { // COMMENT_NODE
         $(this).remove();
       }
     });

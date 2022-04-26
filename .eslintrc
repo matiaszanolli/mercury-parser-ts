@@ -1,7 +1,14 @@
 {
-  "parser": "babel-eslint",
-  "extends": ["airbnb", "prettier"],
-  "plugins": ["babel"],
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "plugins": [
+    "@typescript-eslint"
+  ],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
   "globals": {
     "describe": true,
     "it": true,
@@ -10,6 +17,10 @@
     "beforeEach": true,
     "beforeAll": true,
     "afterAll": true
+  },
+  "env": {
+    "browser": true,
+    "node": true
   },
   "rules": {
     "no-param-reassign": 0,
@@ -25,10 +36,5 @@
       { "max": 1, "maxEOF": 0, "maxBOF": 0 }
     ],
     "import/no-unresolved": false
-  },
-  "settings": {
-    "import/resolver": {
-      "babel-module": {}
-    }
   }
 }

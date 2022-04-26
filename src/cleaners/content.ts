@@ -9,13 +9,13 @@ import {
   markToKeep,
   stripJunkTags,
   makeLinksAbsolute,
-} from 'utils/dom';
+} from '../utils/dom';
 
 // Clean our article content, returning a new, cleaned node.
 export default function extractCleanNode(
-  article,
-  { $, cleanConditionally = true, title = '', url = '', defaultCleaner = true }
-) {
+  article: cheerio.Cheerio,
+  { $,  cleanConditionally = true, title = '', url = '', defaultCleaner = true }: { $: cheerio.Root, cleanConditionally?: boolean, title?: string, url?: string, defaultCleaner?: boolean }
+): cheerio.Cheerio {
   // Rewrite the tag name to div if it's a top level node like body or
   // html to avoid later complications with multiple body tags.
   rewriteTopLevel(article, $);
@@ -49,7 +49,7 @@ export default function extractCleanNode(
   // too many in-article lists being removed. Consider a better
   // way to detect menus particularly and remove them.
   // Also optionally running, since it can be overly aggressive.
-  if (defaultCleaner) cleanTags(article, $, cleanConditionally);
+  if (defaultCleaner) cleanTags(article, $);//, cleanConditionally);
 
   // Remove empty paragraph nodes
   removeEmpty(article, $);

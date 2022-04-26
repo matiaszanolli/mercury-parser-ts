@@ -1,27 +1,27 @@
 import assert from 'assert';
 import cheerio from 'cheerio';
 
-import extractBestNode from 'extractors/generic/content/extract-best-node';
+import extractBestNode from '../extractors/generic/content/extract-best-node';
 import extractCleanNode from './content';
 
-const fs = require('fs');
+import fs from 'fs';
 
 describe('extractCleanNode(article, { $, cleanConditionally, title } })', () => {
   it('cleans cruft out of a DOM node', () => {
-    const html = fs.readFileSync('./fixtures/wired.html', 'utf-8');
-    const $ = cheerio.load(html);
+    const html: string = fs.readFileSync('./fixtures/wired.html', 'utf-8');
+    const $: cheerio.Root = cheerio.load(html);
 
-    const opts = {
+    const opts: { [key: string]: boolean } = {
       stripUnlikelyCandidates: true,
       weightNodes: true,
       cleanConditionally: true,
     };
 
-    const bestNode = extractBestNode($, opts);
+    const bestNode: cheerio.Cheerio = extractBestNode($, opts);
 
     const cleanNode = extractCleanNode(bestNode, { $, opts });
 
-    const text = $(cleanNode)
+    const text: string = $(cleanNode)
       .text()
       .replace(/\n/g, '')
       .replace(/\s+/g, ' ')

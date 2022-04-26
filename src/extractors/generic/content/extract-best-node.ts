@@ -1,4 +1,5 @@
-import { stripUnlikelyCandidates, convertToParagraphs } from 'utils/dom';
+import cheerioModule from 'cheerio';
+import { stripUnlikelyCandidates, convertToParagraphs } from '../../../utils/dom';
 
 import { scoreContent, findTopCandidate } from './scoring';
 
@@ -13,14 +14,14 @@ import { scoreContent, findTopCandidate } from './scoring';
 // worthiness of nodes.
 //
 // Returns a cheerio object $
-export default function extractBestNode($, opts) {
+export default function extractBestNode($: cheerio.Root, opts: { [key: string]: boolean }): cheerio.Cheerio {
   if (opts.stripUnlikelyCandidates) {
     $ = stripUnlikelyCandidates($);
   }
 
   $ = convertToParagraphs($);
   $ = scoreContent($, opts.weightNodes);
-  const $topCandidate = findTopCandidate($);
+  const $topCandidate: cheerio.Cheerio = findTopCandidate($);
 
   return $topCandidate;
 }

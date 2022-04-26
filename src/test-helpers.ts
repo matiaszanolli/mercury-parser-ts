@@ -17,15 +17,15 @@ export function assertClean(a: string, b: string): void {
 }
 
 interface TestHelper {
-  test_folder: string
-  fixtures_folder: string
+  test_folder: string | undefined
+  fixtures_folder: string | undefined
 }
 
 // using this from https://www.ctl.io/developers/blog/post/http-apis-test-code
-export function record(name: string, options: TestHelper) {
-  const test_folder: string = options.test_folder || '.';
-  const fixtures_folder: string = options.fixtures_folder || 'fixtures/nock';
-  const fp = path.join(test_folder, fixtures_folder, `${name}.js`);
+export function record(name: string, options?: TestHelper | undefined) {
+  const test_folder: string = options ? options.test_folder || '.': '.';
+  const fixtures_folder: string = options ? options.fixtures_folder || 'fixtures/nock' : 'fixtures/nock';
+  const fp: string = path.join(test_folder, fixtures_folder, `${name}.js`);
   // `has_fixtures` indicates whether the test has fixtures we should read,
   // or doesn't, so we should record and save them.
   // the environment variable `NOCK_RECORD` can be used to force a new recording.
@@ -51,7 +51,7 @@ export function record(name: string, options: TestHelper) {
       }
     },
 
-    after: (done: () => void) => {
+    after: done => {
       if (!has_fixtures) {
         let fixtures: string[] | nock.Definition[] = nock.recorder.play();
         // eslint-disable-next-line no-console
@@ -79,8 +79,7 @@ export interface MockDomNodeAttrib {
 }
 
 export class MockDomNode {
-  attribs: MockDomNodeAttrib
-  class?: string
+  attribs: MockDomNodeAttrib[]
 
   constructor() {
     this.attribs = [

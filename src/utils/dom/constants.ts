@@ -5,7 +5,7 @@ export const SPACER_RE: RegExp = new RegExp('transparent|spacer|blank', 'i');
 // but would normally remove
 export const KEEP_CLASS: string = 'mercury-parser-keep';
 
-export const KEEP_SELECTORS: Array<string> = [
+export const KEEP_SELECTORS: string[] = [
   'iframe[src^="https://www.youtube.com"]',
   'iframe[src^="https://www.youtube-nocookie.com"]',
   'iframe[src^="http://www.youtube.com"]',
@@ -33,7 +33,7 @@ export const REMOVE_ATTR_SELECTORS = REMOVE_ATTRS.map(
   selector => `[${selector}]`
 );
 export const REMOVE_ATTR_LIST: string = REMOVE_ATTRS.join(',');
-export const WHITELIST_ATTRS: Array<string> = [
+export const WHITELIST_ATTRS: string[] = [
   'src',
   'srcset',
   'sizes',
@@ -53,7 +53,7 @@ export const WHITELIST_ATTRS_RE: RegExp = new RegExp(
 );
 
 // removeEmpty
-export const REMOVE_EMPTY_TAGS: Array<string> = ['p'];
+export const REMOVE_EMPTY_TAGS: string[] = ['p'];
 export const REMOVE_EMPTY_SELECTORS = REMOVE_EMPTY_TAGS.map(
   tag => `${tag}:empty`
 ).join(',');
@@ -69,7 +69,7 @@ export const CLEAN_CONDITIONALLY_TAGS: string = [
 ].join(',');
 
 // cleanHeaders
-const HEADER_TAGS: Array<string> = ['h2', 'h3', 'h4', 'h5', 'h6'];
+const HEADER_TAGS: string[] = ['h2', 'h3', 'h4', 'h5', 'h6'];
 export const HEADER_TAG_LIST: string = HEADER_TAGS.join(',');
 
 // // CONTENT FETCHING CONSTANTS ////
@@ -78,7 +78,7 @@ export const HEADER_TAG_LIST: string = HEADER_TAGS.join(',');
 // extracting content from a resource. These strings are joined together
 // and then tested for existence using re:test, so may contain simple,
 // non-pipe style regular expression queries if necessary.
-export const UNLIKELY_CANDIDATES_BLACKLIST: Array<string> = [
+export const UNLIKELY_CANDIDATES_BLACKLIST: string[] = [
   'ad-break',
   'adbox',
   'advert',
@@ -132,7 +132,7 @@ export const UNLIKELY_CANDIDATES_BLACKLIST: Array<string> = [
 // These strings are joined together and then tested for existence using
 // re:test, so may contain simple, non-pipe style regular expression queries
 // if necessary.
-export const UNLIKELY_CANDIDATES_WHITELIST: Array<string> = [
+export const UNLIKELY_CANDIDATES_WHITELIST: string[] = [
   'and',
   'article',
   'body',
@@ -166,7 +166,7 @@ export const DIV_TO_P_BLOCK_TAGS: string = [
 
 // A list of tags that should be ignored when trying to find the top candidate
 // for a document.
-export const NON_TOP_CANDIDATE_TAGS: Array<string> = [
+export const NON_TOP_CANDIDATE_TAGS: string[] = [
   'br',
   'b',
   'i',
